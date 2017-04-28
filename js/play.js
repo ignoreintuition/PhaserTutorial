@@ -1,65 +1,103 @@
 var playState = {
-  player: {
-    xDest: null,
-    yDest: null
-  },
-  enemy: {
-
-  },
+  player: null,
+  mob: null,
   create: function() {
     var self = this;
-    self.player = game.add.sprite(300, 200, 'characters');
-    self.player.frame = 0;
+    self.player = new Player(300, 200);
     game.add.existing(self.player);
     game.physics.enable(self.player, Phaser.Physics.ARCADE);
-    self.player.anchor.setTo(.5, 1);
-    self.player.animations.add('wait', [8, 9], 4);
 
-    self.enemy = game.add.sprite(100, 100, 'characters');
-    self.enemy.frame = 544;
-    game.add.existing(self.enemy);
-    game.physics.enable(self.enemy, Phaser.Physics.ARCADE);
-    self.enemy.anchor.setTo(.5, 1);
-    self.enemy.scale.x = -1;
-    self.enemy.body.immovable = true;
-
+    self.mob = game.add.group();
+    self.mob.add(Enemy(100, 100));
+    self.mob.add(Enemy(200, 100));
+    self.mob.add(Enemy(100, 200));
+    self.mob.add(Enemy(200, 200));
+    self.mob.add(Enemy(300, 300));
+    self.mob.add(Enemy(400, 200));
+    self.mob.forEach(function(enemy, index){
+      game.physics.enable(enemy, Phaser.Physics.ARCADE);
+      enemy.body.immovable = true;
+    });
     game.input.activePointer.capture = true;
   },
   update: function() {
     var self = this;
     self.player.animations.play('wait');
-    if (game.input.activePointer.isDown) {
-      self.player.xDest = game.input.x;
-      self.player.yDest = game.input.y;
-    }
-    game.physics.arcade.collide(self.player, self.enemy, function(){
-      self.stopPlayer();
+    self.mob.forEach(function(enemy, index){
+      enemy.animations.play('wait');
     });
-    self.movePlayer(game.input.x, game.input.y);
-  },
-  movePlayer: function() {
-    var self = this;
-    if (Math.floor(self.player.x / 10) == Math.floor(self.player.xDest / 10)) {
-      self.player.body.velocity.x = 0;
-    } else if (Math.floor(self.player.x) < Math.floor(self.player.xDest)) {
-      self.player.body.velocity.x = 80;
-      self.player.scale.x = -1;
-    } else if (Math.floor(self.player.x) > Math.floor(self.player.xDest)) {
-      self.player.body.velocity.x = -80;
-      self.player.scale.x = 1;
+    if (game.input.activePointer.isDown) {
+      self.player.setDest(game.input.x, game.input.y);
     }
-    if (Math.floor(self.player.y / 10) === Math.floor(self.player.yDest / 10)) {
-      self.player.body.velocity.y = 0;
-    } else if (Math.floor(self.player.y) < Math.floor(self.player.yDest)) {
-      self.player.body.velocity.y = 80;
-    } else if (Math.floor(self.player.y) > Math.floor(self.player.yDest)) {
-      self.player.body.velocity.y = -80;
-    }
-  },
-  stopPlayer: function() {
-    var self = this;
-    self.player.xDest = self.player.x;
-    self.player.yDest = self.player.y;
-    self.player.body.velocity.x = self.player.body.velocity.y = 0;
+    self.player.update();
+    game.physics.arcade.collide(self.player, self.mob, function(){
+      self.player.stop();
+    });
   }
+};
+
+function Player(x, y) {
+  var player = game.add.sprite(x, y, 'characters');
+
+  player.frame = 0;
+  player.xDest = x;
+  player.yDest = y;
+  player.anchor.setTo(.5, 1);
+  player.animations.add('wait', [8, 9], 4);
+
+  player.setDest = function(x, y){
+    player.xDest = x;
+    player.yDest = y;
+  };
+
+  player.update = function() {
+    var self = this;
+    if (Math.floor(self.x / 10) == Math.floor(self.xDest / 10)) {
+      self.body.velocity.x = 0;
+    } else if (Math.floor(self.x) < Math.floor(self.xDest)) {
+      self.body.velocity.x = 80;
+      self.scale.x = -1;
+    } else if (Math.floor(self.x) > Math.floor(self.xDest)) {
+      self.body.velocity.x = -80;
+      self.scale.x = 1;
+    }
+    if (Math.floor(self.y / 10) === Math.floor(self.yDest / 10)) {
+      self.body.velocity.y = 0;
+    } else if (Math.floor(self.y) < Math.floor(self.yDest)) {
+      self.body.velocity.y = 80;
+    } else if (Math.floor(self.y) > Math.floor(self.yDest)) {
+      self.body.velocity.y = -80;
+    }
+  }
+  player.stop = function() {
+    var self = this;
+    self.xDest = self.x;
+    self.yDest = self.y;
+    self.body.velocity.x = self.body.velocity.y = 0;
+  }
+  return player;
+};
+
+function Enemy(x, y) {
+  var enemy = game.add.sprite(x, y, 'characters');
+
+  enemy.xDest = x;
+  enemy.yDest = y;
+  enemy.animations.add('wait', [544, 545], 4);
+
+  enemy.frame = 544;
+  enemy.anchor.setTo(.5, 1);
+  enemy.scale.x = -1;
+
+  enemy.goToXY = function(x, y) {
+
+  }
+  enemy.update = function() {
+
+  }
+  enemy.stop = function() {
+
+  }
+
+  return enemy;
 }
