@@ -7,13 +7,14 @@ var loadState={
 		game.scale.PageAlignHorizonally = true;
 		game.scale.PageAlignVertically = true;
 		game.stage.backgroundColor = '#000000';
-		
+
 		/**** Load graphics assets ****/
 		game.load.spritesheet('characters', 'assets/sprites/characters.png', 24, 24);
-		
+		game.load.tilemap('level', 'assets/maps/room1.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.image('tiles', 'assets/sprites/world.png');
 		/**** Load audio assets ****/
- 		
- 	},	
+
+ 	},
  	create: function(){
  		game.state.start('title');
  	}
