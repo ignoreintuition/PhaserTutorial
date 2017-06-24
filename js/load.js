@@ -13,6 +13,7 @@ var loadState={
 		game.load.tilemap('level', 'assets/maps/room1.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.image('tiles', 'assets/sprites/world.png');
 		/**** Load audio assets ****/
+		game.load.audio('hit', 'assets/sounds/hit.wav');
 
  	},
  	create: function(){
