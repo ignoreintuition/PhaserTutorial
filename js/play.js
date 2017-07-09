@@ -8,10 +8,13 @@ var playState = {
     var map = game.add.tilemap('level');
     map.addTilesetImage('world', 'tiles');
 
+    game.world.setBounds(0, 0, 480, 360);
     map.setCollision([217, 218, 219, 221]);
     self.layer = map.createLayer('Tile Layer 1');
 
-    self.player = new Player(300, 200);
+    self.player = new Player(150, 100);
+    game.camera.x = 300;
+    game.camera.y = 200;
     game.add.existing(self.player);
     game.physics.enable(self.player, Phaser.Physics.ARCADE);
 
@@ -23,6 +26,15 @@ var playState = {
       enemy.body.immovable = true;
     });
     game.input.activePointer.capture = true;
+
+    var t = game.add.text(0, 165, "Life", { font: "8px ", fill: "#ffffff", align: "center" });
+    t.fixedToCamera = true;
+    var lifebar = game.add.sprite(20, 165, 'lifebar');
+    lifebar.scale.setTo(.25, .25);
+    lifebar.fixedToCamera = true;
+  },
+  render: function(){
+    game.debug.geom(this.bar,'#0fffff')
   },
   update: function() {
     var self = this;
@@ -32,7 +44,8 @@ var playState = {
       enemy.update();
     });
     if (game.input.activePointer.isDown) {
-      self.player.setDest(game.input.x, game.input.y);
+      self.player.setDest(game.input.x * 2, game.input.y * 2);
+      console.log(game.input);
     }
     self.player.update();
     game.physics.arcade.collide(self.player, self.mob, function(p, e) {
@@ -64,6 +77,9 @@ function Player(x, y) {
   player.update = function() {
     var self = this;
     move(self);
+    game.camera.x = self.x - 150;
+    game.camera.y = self.y - 100;
+
   }
   player.stop = function() {
     var self = this;

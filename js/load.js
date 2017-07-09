@@ -10,8 +10,10 @@ var loadState={
 
 		/**** Load graphics assets ****/
 		game.load.spritesheet('characters', 'assets/sprites/characters.png', 24, 24);
+		game.load.image('lifebar', 'assets/sprites/interface/lifebar.png');
 		game.load.tilemap('level', 'assets/maps/room1.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.image('tiles', 'assets/sprites/world.png');
+
 		/**** Load audio assets ****/
 		game.load.audio('hit', 'assets/sounds/hit.wav');
 
