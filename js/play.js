@@ -44,8 +44,7 @@ var playState = {
       enemy.update();
     });
     if (game.input.activePointer.isDown) {
-      self.player.setDest(game.input.x * 2, game.input.y * 2);
-      console.log(game.input);
+      self.player.setDest(game.input.x - game.world.worldPosition.x, game.input.y - game.world.worldPosition.y);
     }
     self.player.update();
     game.physics.arcade.collide(self.player, self.mob, function(p, e) {
